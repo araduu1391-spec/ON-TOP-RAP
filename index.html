@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARAD ON TOP | DissRap</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07070b;color:#fff;font-family:Tahoma,Arial,sans-serif}
+header{padding:18px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #262632;background:#09090df2;position:sticky;top:0;z-index:5}
+.logo{font-weight:900;font-size:22px;color:#ff1744}.logo span{color:#fff}nav a{color:#ddd;text-decoration:none;margin:0 8px}
+.hero{text-align:center;padding:65px 20px;background:radial-gradient(circle,#501026,transparent 55%)}h1{font-size:46px;margin:8px}
+.hero p{color:#aaa}.btn{border:0;background:#ff1744;color:#fff;padding:12px 20px;border-radius:10px;font-weight:bold;cursor:pointer}
+main{max-width:1050px;margin:auto;padding:30px 18px}.toolbar{display:flex;gap:10px;margin-bottom:20px}
+input,textarea{width:100%;background:#12121a;color:#fff;border:1px solid #333343;border-radius:10px;padding:12px}.search{max-width:380px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{background:#111119;border:1px solid #292936;border-radius:15px;padding:16px}.cover{height:135px;border-radius:11px;background:linear-gradient(135deg,#ff1744,#1b1020);display:flex;align-items:center;justify-content:center;font-size:48px}
+.meta{color:#999;font-size:13px;margin:6px 0 10px}audio{width:100%;margin-top:8px}form{max-width:650px;margin:40px auto;background:#111119;border:1px solid #292936;border-radius:15px;padding:22px}label{display:block;margin:13px 0 6px;color:#ddd}.note{color:#888;font-size:13px;margin-top:12px}footer{text-align:center;color:#777;padding:35px}
+</style>
+</head>
+<body>
+<header><div class="logo">ARAD <span>ON TOP</span></div><nav><a href="#tracks">دیس‌رپ‌ها</a><a href="#upload">آپلود</a></nav></header>
+<section class="hero"><h1>🎤 ARAD ON TOP</h1><p>پلتفرم انتشار و شنیدن دیس‌رپ</p><a class="btn" href="#upload">آپلود دیس‌رپ</a></section>
+<main>
+<section id="tracks"><div class="toolbar"><input id="search" class="search" placeholder="جست‌وجوی عنوان یا رپر..." oninput="render()"></div><div id="list" class="grid"></div></section>
+<section id="upload"><form id="form"><h2>آپلود دیس‌رپ</h2>
+<label>عنوان</label><input id="title" required placeholder="عنوان دیس‌رپ">
+<label>نام رپر</label><input id="artist" required placeholder="نام هنری">
+<label>توضیحات</label><textarea id="desc" rows="3"></textarea>
+<label>فایل صوتی</label><input id="audio" type="file" accept="audio/*" required>
+<br><br><button class="btn">انتشار</button>
+<div class="note">نسخه فعلی آماده Deploy است. برای ذخیره دائمی و عمومی فایل‌ها، باید بک‌اند و فضای ذخیره‌سازی متصل شود.</div>
+</form></section>
+</main><footer>© 2026 ARAD ON TOP</footer>
+<script>
+let tracks=JSON.parse(localStorage.getItem("aradTracks")||"[]");
+const esc=s=>String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function render(){let q=document.getElementById("search").value.toLowerCase(),box=document.getElementById("list");box.innerHTML="";
+tracks.filter(t=>(t.title+" "+t.artist).toLowerCase().includes(q)).forEach(t=>{let c=document.createElement("article");c.className="card";c.innerHTML=`<div class="cover">🎤</div><h3>${esc(t.title)}</h3><div class="meta">${esc(t.artist)}</div><p>${esc(t.desc)}</p><audio controls src="${t.audio}"></audio>`;box.appendChild(c)});
+if(!box.children.length)box.innerHTML='<p style="color:#888">هنوز دیس‌رپی منتشر نشده.</p>'}
+document.getElementById("form").onsubmit=e=>{e.preventDefault();let f=audio.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{tracks.unshift({title:title.value,artist:artist.value,desc:desc.value,audio:r.result});try{localStorage.setItem("aradTracks",JSON.stringify(tracks))}catch(err){alert("فایل برای ذخیره محلی خیلی بزرگ است؛ نسخه آنلاین نیاز به فضای ذخیره‌سازی دارد.")}e.target.reset();render();location.hash="tracks"};r.readAsDataURL(f)};
+render();
+</script>
+</body></html>
